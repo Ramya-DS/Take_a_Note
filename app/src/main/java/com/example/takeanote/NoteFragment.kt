@@ -150,4 +150,9 @@ class NoteFragment : DialogFragment() {
             it.putInt("color", currentNote.color)
         }
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dialog?.window?.attributes?.windowAnimations=R.style.DialogAnimation
+    }
 }

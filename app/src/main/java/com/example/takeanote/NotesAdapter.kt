@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,9 @@ class NotesAdapter(
     inner class NoteViewHolder(noteView: View) : RecyclerView.ViewHolder(noteView),
         View.OnClickListener {
         var note: NoteClass? = null
-        val title: TextView = noteView.findViewById(R.id.title)
+        val noteLayout: View = noteView.findViewById(R.id.note)
+        val title:TextView=noteLayout.findViewById(R.id.title)
+        val content: TextView=noteLayout.findViewById(R.id.content)
 
         init {
             noteView.setOnClickListener(this)
@@ -55,14 +58,14 @@ class NotesAdapter(
                     it.getInt(it.getColumnIndex(NoteDbContract.NoteDb.COLUMN_NAME_COLOR))
                 )
 
-
+                holder.content.text=holder.note?.content
 
                 holder.note?.title.let {title->
                     holder.title.text=title
                     Log.d("inside $position","${holder.title.text}")
                 }
 
-                holder.title.setBackgroundColor(
+                holder.noteLayout.setBackgroundColor(
                     getColor(
                         context,
                         holder.note?.color!!

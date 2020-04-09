@@ -75,4 +75,9 @@ class ColorPickerFragment : DialogFragment() {
 
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dialog?.window?.attributes?.windowAnimations=R.style.ColorAnimation
+    }
+
 }
