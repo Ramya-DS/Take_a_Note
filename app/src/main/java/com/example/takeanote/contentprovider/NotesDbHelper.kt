@@ -19,7 +19,7 @@ object NoteDbContract {
 private const val SQL_CREATE_ENTRIES =
     "CREATE TABLE ${NoteDbContract.NoteDb.TABLE_NAME} (" +
             "${NoteDbContract.NoteDb.COLUMN_ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "${NoteDbContract.NoteDb.COLUMN_NAME_TITLE} TEXT DEFAULT NO TITLE," +
+            "${NoteDbContract.NoteDb.COLUMN_NAME_TITLE} TEXT DEFAULT 'NO TITLE'," +
             "${NoteDbContract.NoteDb.COLUMN_NAME_CONTENT} TEXT DEFAULT NULL," +
             "${NoteDbContract.NoteDb.COLUMN_NAME_COLOR} TEXT)"
 
