@@ -17,7 +17,7 @@
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:title="Take a Note"
-            app:titleMargin="5dp"
+            app:titleMargin="7dp"
             app:titleTextAppearance="@font/heading"
             app:titleTextColor="@color/white"
             app:menu="@menu/menu_toolbar"/>

@@ -44,7 +44,7 @@ class NoteFragment : DialogFragment() {
     lateinit var title: EditText
     lateinit var content: EditText
     lateinit var rootView: View
-    var add: Boolean = false
+    private var add: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

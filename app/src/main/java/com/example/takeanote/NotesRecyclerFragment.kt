@@ -53,7 +53,7 @@ class NotesRecyclerFragment : Fragment(), OnNoteSelectedListener,
         notesRecyclerView = rootView.findViewById(R.id.notes_recycler)
         notesRecyclerView.layoutManager = LinearLayoutManager(context)
         notesRecyclerView.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_dropdown)
+            AnimationUtils.loadLayoutAnimation(context?.applicationContext, R.anim.recycler_dropdown)
         notesRecyclerView.setHasFixedSize(false)
         notesRecyclerView.adapter = NotesAdapter(getAllNotes(), context!!, this)
 

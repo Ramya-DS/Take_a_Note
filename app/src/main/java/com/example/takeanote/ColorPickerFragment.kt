@@ -14,11 +14,12 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.ref.WeakReference
 
 /**
  * A simple [Fragment] subclass.
  */
-class ColorPickerFragment : DialogFragment() {
+class ColorPickerFragment : DialogFragment(),OnColorSelectedListener {
 
 
     companion object {
@@ -26,7 +27,7 @@ class ColorPickerFragment : DialogFragment() {
             this.arguments = Bundle()
         }
 
-        val value = BackgroundColor.values()
+        var value: Array<BackgroundColor>? = BackgroundColor.values()
     }
 
     override fun onCreateView(
@@ -38,46 +39,25 @@ class ColorPickerFragment : DialogFragment() {
         val colorList = rootView.findViewById<RecyclerView>(R.id.color_recycler)
         colorList.layoutManager = GridLayoutManager(context, 3)
         colorList.setHasFixedSize(true)
-        colorList.adapter=ColorAdapter()
+        colorList.adapter = ColorAdapter(this,WeakReference(context!!))
         return rootView
-    }
-
-    inner class ColorAdapter : RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
-
-        inner class ColorViewHolder(val colorView: View) : RecyclerView.ViewHolder(colorView),
-            View.OnClickListener {
-            init {
-                colorView.setOnClickListener(this)
-            }
-
-            override fun onClick(v: View?) {
-                targetFragment?.onActivityResult(1, Activity.RESULT_OK,Intent().apply {
-                    this.putExtra("color", value[adapterPosition].color)
-                })
-                this@ColorPickerFragment.dismiss()
-            }
-        }
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder =
-            ColorViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.color_box,
-                    parent,
-                    false
-                )
-            )
-
-        override fun getItemCount() = value.size
-
-        override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
-            holder.colorView.setBackgroundColor(getColor(context!!,value[position].color))
-        }
-
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dialog?.window?.attributes?.windowAnimations=R.style.ColorAnimation
+        dialog?.window?.attributes?.windowAnimations = R.style.ColorAnimation
     }
 
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onColorSelected(color: Int) {
+        targetFragment?.onActivityResult(1, Activity.RESULT_OK, Intent().apply {
+            this.putExtra("color",color )
+        })
+        this.dismiss()
+    }
 }
