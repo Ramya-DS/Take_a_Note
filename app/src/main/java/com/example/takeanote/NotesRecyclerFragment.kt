@@ -1,28 +1,19 @@
 package com.example.takeanote
 
 
-import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
-import android.transition.Explode
-import android.transition.Fade
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.takeanote.contentprovider.NoteDbContract
 import com.example.takeanote.contentprovider.NotesContentProvider
-import kotlin.math.roundToInt
 
 
 /**
@@ -53,7 +44,10 @@ class NotesRecyclerFragment : Fragment(), OnNoteSelectedListener,
         notesRecyclerView = rootView.findViewById(R.id.notes_recycler)
         notesRecyclerView.layoutManager = LinearLayoutManager(context)
         notesRecyclerView.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context?.applicationContext, R.anim.recycler_dropdown)
+            AnimationUtils.loadLayoutAnimation(
+                context?.applicationContext,
+                R.anim.recycler_dropdown
+            )
         notesRecyclerView.setHasFixedSize(false)
         notesRecyclerView.adapter = NotesAdapter(getAllNotes(), context!!, this)
 

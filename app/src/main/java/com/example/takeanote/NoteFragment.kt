@@ -55,7 +55,6 @@ class NoteFragment : DialogFragment() {
         title = rootView.findViewById(R.id.title)
         content = rootView.findViewById(R.id.content)
 
-
         currentNote.title.let { title.text.insert(title.selectionStart, it) }
         currentNote.content?.let { content.text.insert(content.selectionStart, it) }
         rootView.setBackgroundColor(getColor(context!!, currentNote.color))
@@ -94,6 +93,7 @@ class NoteFragment : DialogFragment() {
                     childFragment.show(fragmentManager!!, "COLORPICKER")
                     true
                 }
+                //TODO Do we need delete action while adding a Note ?
                 R.id.delete -> {
                     activity?.contentResolver?.delete(
                         Uri.parse("${NotesContentProvider.CONTENT_URI}/${currentNote.id}"),

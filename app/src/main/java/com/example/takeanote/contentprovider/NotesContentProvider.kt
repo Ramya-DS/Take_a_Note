@@ -26,6 +26,7 @@ class NotesContentProvider : ContentProvider() {
                 NoteDbContract.NoteDb.TABLE_NAME,
                 ALL_NOTES
             )
+            //TODO this URI should be matching single notes, right ?
             addURI(
                 "com.example.takeanote.contentprovider",
                 NoteDbContract.NoteDb.TABLE_NAME + "/#",

@@ -33,6 +33,7 @@ class NoteDbHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        //TODO Won't recreating table on upgrade cause loss of state for user for every app update ? what is the purpose of onUpgrade ?
         db.execSQL(SQL_DELETE_ENTRIES)
         onCreate(db)
     }

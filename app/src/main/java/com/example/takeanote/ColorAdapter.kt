@@ -36,10 +36,13 @@ class ColorAdapter(val mOnColorSelectedListener: OnColorSelectedListener, val co
     override fun getItemCount() = ColorPickerFragment.value?.size ?: -1
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
+
         holder.colorView.setBackgroundColor(
             ContextCompat.getColor(
+                //TODO Since it is a WeakReference, the context instance could be null. How can we assert that it is not ?
+                // Also, since we can get context from colorView is another context reference required ?
                 context.get()!!,
-                ColorPickerFragment.value!!.get(position).color
+                ColorPickerFragment.value!![position].color
             )
         )
     }
