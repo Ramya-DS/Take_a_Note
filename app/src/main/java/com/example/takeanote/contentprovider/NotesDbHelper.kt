@@ -9,7 +9,7 @@ object NoteDbContract {
 
     object NoteDb : BaseColumns {
         const val TABLE_NAME = "AllNotes"
-        const val COLUMN_ID="id"
+        const val COLUMN_ID = "id"
         const val COLUMN_NAME_TITLE = "title"
         const val COLUMN_NAME_CONTENT = "content"
         const val COLUMN_NAME_COLOR = "color"
@@ -23,8 +23,6 @@ private const val SQL_CREATE_ENTRIES =
             "${NoteDbContract.NoteDb.COLUMN_NAME_CONTENT} TEXT DEFAULT NULL," +
             "${NoteDbContract.NoteDb.COLUMN_NAME_COLOR} TEXT)"
 
-private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${NoteDbContract.NoteDb.TABLE_NAME}"
-
 class NoteDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -33,13 +31,12 @@ class NoteDbHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        //TODO Won't recreating table on upgrade cause loss of state for user for every app update ? what is the purpose of onUpgrade ?
-        db.execSQL(SQL_DELETE_ENTRIES)
-        onCreate(db)
-    }
-
-    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onUpgrade(db, oldVersion, newVersion)
+//        for (version in oldVersion + 1..newVersion) {
+//            when (version) {
+//                2 ->  // make changes in version 2 using alter table/necessary statement
+//                3 ->  // make changes in version 3 using alter table/necessary statement
+//            }
+//        }
     }
 
     companion object {

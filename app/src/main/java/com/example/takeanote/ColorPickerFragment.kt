@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.ref.WeakReference
 
 /**
  * A simple [Fragment] subclass.
@@ -24,8 +23,7 @@ class ColorPickerFragment : DialogFragment(), OnColorSelectedListener {
             this.arguments = Bundle()
         }
 
-        //TODO Why is this variable nullable ?
-        var value: Array<BackgroundColor>? = BackgroundColor.values()
+        var value: Array<BackgroundColor> = BackgroundColor.values()
     }
 
     override fun onCreateView(
@@ -37,7 +35,7 @@ class ColorPickerFragment : DialogFragment(), OnColorSelectedListener {
         val colorList = rootView.findViewById<RecyclerView>(R.id.color_recycler)
         colorList.layoutManager = GridLayoutManager(context, 3)
         colorList.setHasFixedSize(true)
-        colorList.adapter = ColorAdapter(this,WeakReference(context!!))
+        colorList.adapter = ColorAdapter(this)
         return rootView
     }
 
@@ -46,15 +44,9 @@ class ColorPickerFragment : DialogFragment(), OnColorSelectedListener {
         dialog?.window?.attributes?.windowAnimations = R.style.ColorAnimation
     }
 
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     override fun onColorSelected(color: Int) {
         targetFragment?.onActivityResult(1, Activity.RESULT_OK, Intent().apply {
-            this.putExtra("color",color )
+            this.putExtra("color", color)
         })
         this.dismiss()
     }

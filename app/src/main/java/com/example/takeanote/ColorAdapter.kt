@@ -1,16 +1,12 @@
 package com.example.takeanote
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.ref.WeakReference
 
-class ColorAdapter(val mOnColorSelectedListener: OnColorSelectedListener, val context: WeakReference<Context>) :
+class ColorAdapter(val mOnColorSelectedListener: OnColorSelectedListener) :
     RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
 
     inner class ColorViewHolder(val colorView: View) : RecyclerView.ViewHolder(colorView),
@@ -20,7 +16,7 @@ class ColorAdapter(val mOnColorSelectedListener: OnColorSelectedListener, val co
         }
 
         override fun onClick(v: View?) {
-            mOnColorSelectedListener.onColorSelected(ColorPickerFragment.value!![adapterPosition].color)
+            mOnColorSelectedListener.onColorSelected(ColorPickerFragment.value[adapterPosition].color)
         }
     }
 
@@ -33,16 +29,13 @@ class ColorAdapter(val mOnColorSelectedListener: OnColorSelectedListener, val co
             )
         )
 
-    override fun getItemCount() = ColorPickerFragment.value?.size ?: -1
+    override fun getItemCount() = ColorPickerFragment.value.size
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
-
         holder.colorView.setBackgroundColor(
             ContextCompat.getColor(
-                //TODO Since it is a WeakReference, the context instance could be null. How can we assert that it is not ?
-                // Also, since we can get context from colorView is another context reference required ?
-                context.get()!!,
-                ColorPickerFragment.value!![position].color
+                holder.colorView.context,
+                ColorPickerFragment.value[position].color
             )
         )
     }

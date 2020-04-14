@@ -1,12 +1,10 @@
 package com.example.takeanote
 
-import android.content.Context
 import android.database.Cursor
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +12,6 @@ import com.example.takeanote.contentprovider.NoteDbContract
 
 class NotesAdapter(
     private var cursor: Cursor?,
-    private val context: Context,
     val mOnNoteSelectedListener: OnNoteSelectedListener
 ) :
     RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
@@ -67,7 +64,7 @@ class NotesAdapter(
 
                 holder.noteLayout.setBackgroundColor(
                     getColor(
-                        context,
+                        holder.noteLayout.context,
                         holder.note?.color!!
                     )
                 )

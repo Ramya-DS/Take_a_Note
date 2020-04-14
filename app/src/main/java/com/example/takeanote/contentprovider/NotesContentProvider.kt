@@ -30,7 +30,7 @@ class NotesContentProvider : ContentProvider() {
             addURI(
                 "com.example.takeanote.contentprovider",
                 NoteDbContract.NoteDb.TABLE_NAME + "/#",
-                ALL_NOTES
+                SINGLE_NOTE
             )
         }
     }
@@ -38,7 +38,9 @@ class NotesContentProvider : ContentProvider() {
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         val db = dbHelper.writableDatabase
         val newRowId = db?.insert(NoteDbContract.NoteDb.TABLE_NAME, null, values)
+        Log.d("insert", "insert")
         context?.contentResolver?.notifyChange(uri, null)
+
         return Uri.parse("$CONTENT_URI/$newRowId")
     }
 
@@ -100,13 +102,4 @@ class NotesContentProvider : ContentProvider() {
             else ->
                 throw  IllegalArgumentException("Unsupported URI: $uri")
         }
-
-    fun search(uri: Uri, word: String): Cursor? {
-        val db = dbHelper.writableDatabase
-        val sql =
-            "SELECT * FROM ${NoteDbContract.NoteDb.TABLE_NAME} WHERE ${NoteDbContract.NoteDb.COLUMN_NAME_TITLE} ${NoteDbContract.NoteDb.COLUMN_NAME_CONTENT} LIKE '%$word%'"
-//        "SELECT * FROM " + No.TABLE_WORDS.toString() + " WHERE " + DbConstants.WORD.toString() + " LIKE '%" + searchText.toString() + "%'"
-        val cursor: Cursor = db.rawQuery(sql, null)
-        return cursor
-    }
 }

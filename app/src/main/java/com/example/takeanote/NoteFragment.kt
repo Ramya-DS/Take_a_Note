@@ -2,22 +2,24 @@ package com.example.takeanote
 
 
 import android.app.Activity
+import android.content.AsyncQueryHandler
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Telephony
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+import androidx.fragment.app.Fragment
 import com.example.takeanote.contentprovider.NoteDbContract
 import com.example.takeanote.contentprovider.NotesContentProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.lang.ref.WeakReference
 
 /**
  * A simple [Fragment] subclass.
@@ -38,22 +40,61 @@ class NoteFragment : DialogFragment() {
             fragment.arguments = bundle
             return fragment
         }
+
+        class NoteAsyncHandler(contentResolver: WeakReference<ContentResolver>) :
+            AsyncQueryHandler(contentResolver.get()) {
+
+            fun insert(note: NoteClass) {
+                val values = ContentValues().apply {
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_TITLE, note.title)
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_CONTENT, note.content)
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_COLOR, note.color)
+                }
+                Log.d("insert", "async")
+                startInsert(0, null, NotesContentProvider.CONTENT_URI, values)
+            }
+
+            fun delete(note: NoteClass) {
+                startDelete(
+                    0,
+                    null,
+                    Uri.parse("${NotesContentProvider.CONTENT_URI}/${note.id}"),
+                    null,
+                    null
+                )
+            }
+
+            fun update(note: NoteClass) {
+                val values = ContentValues().apply {
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_TITLE, note.title)
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_CONTENT, note.content)
+                    this.put(NoteDbContract.NoteDb.COLUMN_NAME_COLOR, note.color)
+                    this.put(NoteDbContract.NoteDb.COLUMN_ID, note.id)
+                }
+
+                startUpdate(
+                    0, null,
+                    Uri.parse("${NotesContentProvider.CONTENT_URI}/${note.id}"), values, null, null
+                )
+            }
+        }
     }
 
-    lateinit var currentNote: NoteClass
-    lateinit var title: EditText
-    lateinit var content: EditText
-    lateinit var rootView: View
+    private lateinit var currentNote: NoteClass
+    private lateinit var rootView: View
     private var add: Boolean = false
+    private lateinit var handler: NoteAsyncHandler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+        handler = NoteAsyncHandler(WeakReference(activity!!.applicationContext.contentResolver))
+
         rootView = inflater.inflate(R.layout.fragment_note, container, false)
-        title = rootView.findViewById(R.id.title)
-        content = rootView.findViewById(R.id.content)
+        val title: EditText = rootView.findViewById(R.id.title)
+        val content: EditText = rootView.findViewById(R.id.content)
 
         currentNote.title.let { title.text.insert(title.selectionStart, it) }
         currentNote.content?.let { content.text.insert(content.selectionStart, it) }
@@ -62,29 +103,22 @@ class NoteFragment : DialogFragment() {
         val noteBottomBar =
             rootView.findViewById<BottomNavigationView>(R.id.note_bottomNavigationView)
 
+
+        if (add) {
+            noteBottomBar.menu.getItem(0).isVisible = false
+        }
         noteBottomBar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
 
                 R.id.save -> {
-                    val values = ContentValues().apply {
-                        this.put(NoteDbContract.NoteDb.COLUMN_NAME_TITLE, title.text.toString())
-                        this.put(NoteDbContract.NoteDb.COLUMN_NAME_CONTENT, content.text.toString())
-                        this.put(NoteDbContract.NoteDb.COLUMN_NAME_COLOR, currentNote.color)
-                    }
-                    if (add) {
-                        activity?.contentResolver?.insert(NotesContentProvider.CONTENT_URI, values)
-                    } else {
-                        values.put(NoteDbContract.NoteDb.COLUMN_ID, currentNote.id)
-                        activity?.contentResolver?.update(
-                            Uri.parse("${NotesContentProvider.CONTENT_URI}/${currentNote.id}"),
-                            values,
-                            null,
-                            null
-                        )
-                    }
+                    currentNote.title = title.text.toString()
+                    currentNote.content = content.text.toString()
 
-                    this
-                        .dismiss()
+                    if (add)
+                        handler.insert(currentNote)
+                    else
+                        handler.update(currentNote)
+                    this.dismiss()
                     true
                 }
                 R.id.color -> {
@@ -95,11 +129,7 @@ class NoteFragment : DialogFragment() {
                 }
                 //TODO Do we need delete action while adding a Note ?
                 R.id.delete -> {
-                    activity?.contentResolver?.delete(
-                        Uri.parse("${NotesContentProvider.CONTENT_URI}/${currentNote.id}"),
-                        null,
-                        null
-                    )
+                    handler.delete(currentNote)
                     this.dismiss()
                     true
                 }
@@ -153,6 +183,12 @@ class NoteFragment : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dialog?.window?.attributes?.windowAnimations=R.style.DialogAnimation
+        dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimation
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
+    }
+
 }
