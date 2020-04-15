@@ -33,7 +33,7 @@ class NotesRecyclerFragment : Fragment(), OnNoteSelectedListener,
     }
 
     private lateinit var notesRecyclerView: RecyclerView
-    lateinit var refreshLayout: SwipeRefreshLayout
+    private lateinit var refreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

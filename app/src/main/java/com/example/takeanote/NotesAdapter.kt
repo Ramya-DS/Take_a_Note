@@ -20,8 +20,8 @@ class NotesAdapter(
         View.OnClickListener {
         var note: NoteClass? = null
         val noteLayout: View = noteView.findViewById(R.id.note)
-        val title:TextView=noteLayout.findViewById(R.id.title)
-        val content: TextView=noteLayout.findViewById(R.id.content)
+        val title: TextView = noteLayout.findViewById(R.id.title)
+        val content: TextView = noteLayout.findViewById(R.id.content)
 
         init {
             noteView.setOnClickListener(this)
@@ -55,11 +55,11 @@ class NotesAdapter(
                     it.getInt(it.getColumnIndex(NoteDbContract.NoteDb.COLUMN_NAME_COLOR))
                 )
 
-                holder.content.text=holder.note?.content
+                holder.content.text = holder.note?.content
 
-                holder.note?.title.let {title->
-                    holder.title.text=title
-                    Log.d("inside $position","${holder.title.text}")
+                holder.note?.title.let { title ->
+                    holder.title.text = title
+                    Log.d("inside $position", "${holder.title.text}")
                 }
 
                 holder.noteLayout.setBackgroundColor(
